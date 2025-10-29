@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Quick Start Guide&colon; Raspberry Pi 5 &harr; Arduino Serial Communication</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="quick-start-guide-raspberry-pi-5--arduino-serial-communication">Quick Start Guide: Raspberry Pi 5 ↔ Arduino Serial Communication</h1>
+<p><strong>Get up and running in 15 minutes!</strong></p>
+<hr>
+<h2 id="what-youll-need">What You'll Need</h2>
+<ul>
+<li>✅ Raspberry Pi 5 with Raspberry Pi OS</li>
+<li>✅ Arduino Uno R3</li>
+<li>✅ USB A-to-B cable</li>
+<li>✅ Internet connection</li>
+</ul>
+<hr>
+<h2 id="step-1-update-system--install-arduino-ide">Step 1: Update System &amp; Install Arduino IDE</h2>
+<p>Open Terminal and run these commands:</p>
+<pre><code class="language-bash"><span class="hljs-comment"># Update package lists</span>
+sudo apt update
+
+<span class="hljs-comment"># Install Arduino IDE</span>
+sudo apt install arduino -y
+
+<span class="hljs-comment"># Verify installation</span>
+arduino --version
+</code></pre>
+<p><strong>Expected output:</strong> <code>Arduino: 1.8.19</code> (or similar)</p>
+<hr>
+<h2 id="step-2-set-up-usb-permissions">Step 2: Set Up USB Permissions</h2>
+<p>Add your user to the required groups:</p>
+<pre><code class="language-bash"><span class="hljs-comment"># Add to dialout group (serial port access)</span>
+sudo usermod -a -G dialout <span class="hljs-variable">$USER</span>
+
+<span class="hljs-comment"># Add to tty group</span>
+sudo usermod -a -G <span class="hljs-built_in">tty</span> <span class="hljs-variable">$USER</span>
+
+<span class="hljs-comment"># Verify groups were added</span>
+<span class="hljs-built_in">groups</span> <span class="hljs-variable">$USER</span>
+</code></pre>
+<p>You should see <code>dialout</code> and <code>tty</code> in the output.</p>
+<p><strong>⚠️ IMPORTANT:</strong> You must log out and log back in for changes to take effect!</p>
+<pre><code class="language-bash"><span class="hljs-comment"># Reboot to apply changes</span>
+sudo reboot
+</code></pre>
+<hr>
+<h2 id="step-3-install-python-serial-library">Step 3: Install Python Serial Library</h2>
+<p>After rebooting, open Terminal again:</p>
+<pre><code class="language-bash"><span class="hljs-comment"># Install PySerial</span>
+pip3 install pyserial
+</code></pre>
+<p><strong>Or use the system package:</strong></p>
+<pre><code class="language-bash">sudo apt install python3-serial -y
+</code></pre>
+<p><strong>Verify installation:</strong></p>
+<pre><code class="language-bash">python3 -c <span class="hljs-string">&quot;import serial; print(&#x27;PySerial installed successfully!&#x27;)&quot;</span>
+</code></pre>
+<hr>
+<h2 id="step-4-connect-arduino--verify">Step 4: Connect Arduino &amp; Verify</h2>
+<ol>
+<li><strong>Plug Arduino into Raspberry Pi</strong> via USB cable</li>
+<li><strong>Arduino power LED</strong> should light up</li>
+</ol>
+<p><strong>Check the connection:</strong></p>
+<pre><code class="language-bash"><span class="hljs-comment"># List USB devices (should show Arduino)</span>
+lsusb | grep Arduino
+
+<span class="hljs-comment"># Check serial port exists</span>
+<span class="hljs-built_in">ls</span> /dev/ttyACM*
+</code></pre>
+<p><strong>Expected output:</strong> <code>/dev/ttyACM0</code></p>
+<hr>
+<h2 id="step-5-upload-arduino-code">Step 5: Upload Arduino Code</h2>
+<h3 id="arduino-sketch-arduino_receiverino">Arduino Sketch (arduino_receiver.ino)</h3>
+<p><strong>Option A:</strong> Use existing file in <code>RPI-Arduino_serial/arduino_receiver.ino</code></p>
+<p><strong>Option B:</strong> Create new sketch:</p>
+<ol>
+<li>Open Arduino IDE: <code>arduino &amp;</code></li>
+<li>Copy this code:</li>
+</ol>
+<pre><code class="language-cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span> </span>{
+  Serial.<span class="hljs-built_in">begin</span>(<span class="hljs-number">9600</span>);
+  <span class="hljs-built_in">delay</span>(<span class="hljs-number">2000</span>);
+  Serial.<span class="hljs-built_in">println</span>(<span class="hljs-string">&quot;Arduino ready to receive!&quot;</span>);
+  Serial.<span class="hljs-built_in">println</span>(<span class="hljs-string">&quot;Waiting for messages...&quot;</span>);
+  Serial.<span class="hljs-built_in">println</span>(<span class="hljs-string">&quot;----------------------------&quot;</span>);
+}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">if</span> (Serial.<span class="hljs-built_in">available</span>() &gt; <span class="hljs-number">0</span>) {
+    String message = Serial.<span class="hljs-built_in">readStringUntil</span>(<span class="hljs-string">&#x27;\n&#x27;</span>);
+    Serial.<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Received: &quot;</span>);
+    Serial.<span class="hljs-built_in">println</span>(message);
+    Serial.<span class="hljs-built_in">println</span>(<span class="hljs-string">&quot;----------------------------&quot;</span>);
+  }
+}
+</code></pre>
+<ol start="3">
+<li><strong>Select Board:</strong> Tools → Board → Arduino Uno</li>
+<li><strong>Select Port:</strong> Tools → Port → /dev/ttyACM0</li>
+<li><strong>Upload:</strong> Click the → (Upload) button</li>
+<li><strong>Wait for:</strong> &quot;Done uploading&quot;</li>
+</ol>
+<hr>
+<h2 id="step-6-test-with-python">Step 6: Test with Python</h2>
+<h3 id="python-script-first_messagepy">Python Script (first_message.py)</h3>
+<p><strong>Option A:</strong> Use existing file in <code>RPI-Arduino_serial/first_message.py</code></p>
+<pre><code class="language-bash"><span class="hljs-built_in">cd</span> RPI-Arduino_serial
+python3 first_message.py
+</code></pre>
+<p><strong>Option B:</strong> Create quick test script:</p>
+<pre><code class="language-bash">nano test_serial.py
+</code></pre>
+<p>Paste this code:</p>
+<pre><code class="language-python"><span class="hljs-comment">#!/usr/bin/env python3</span>
+<span class="hljs-keyword">import</span> serial
+<span class="hljs-keyword">import</span> time
+
+<span class="hljs-comment"># Configuration</span>
+SERIAL_PORT = <span class="hljs-string">&#x27;/dev/ttyACM0&#x27;</span>
+BAUD_RATE = <span class="hljs-number">9600</span>
+
+<span class="hljs-comment"># Connect to Arduino</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Connecting to Arduino...&quot;</span>)
+ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=<span class="hljs-number">1</span>)
+time.sleep(<span class="hljs-number">2</span>)  <span class="hljs-comment"># Wait for Arduino to reset</span>
+
+<span class="hljs-comment"># Send message</span>
+message = <span class="hljs-string">&quot;Hello from Raspberry Pi!&quot;</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Sending: <span class="hljs-subst">{message}</span>&quot;</span>)
+ser.write(message.encode())
+ser.write(<span class="hljs-string">b&#x27;\n&#x27;</span>)  <span class="hljs-comment"># Message delimiter</span>
+
+time.sleep(<span class="hljs-number">1</span>)
+ser.close()
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Message sent! Open Arduino Serial Monitor to see it.&quot;</span>)
+</code></pre>
+<p>Save (<code>Ctrl+O</code>, <code>Enter</code>, <code>Ctrl+X</code>) and run:</p>
+<pre><code class="language-bash">python3 test_serial.py
+</code></pre>
+<hr>
+<h2 id="step-7-view-results">Step 7: View Results</h2>
+<ol>
+<li><strong>Close any running Python scripts</strong></li>
+<li><strong>Open Arduino IDE</strong> (if not already open)</li>
+<li><strong>Open Serial Monitor:</strong> Tools → Serial Monitor</li>
+<li><strong>Set baud rate to 9600</strong> (bottom right dropdown)</li>
+</ol>
+<p>You should see:</p>
+<pre><code>Arduino ready to receive!
+Waiting for messages...
+----------------------------
+Received: Hello from Raspberry Pi!
+----------------------------
+</code></pre>
+<p>✅ <strong>Success! Your setup is complete!</strong></p>
+<hr>
+<h2 id="two-way-communication-example">Two-Way Communication Example</h2>
+<p>Want Arduino to respond back? Try this:</p>
+<h3 id="arduino-code-with-response">Arduino Code (with response):</h3>
+<pre><code class="language-cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span> </span>{
+  Serial.<span class="hljs-built_in">begin</span>(<span class="hljs-number">9600</span>);
+  <span class="hljs-built_in">delay</span>(<span class="hljs-number">2000</span>);
+}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">if</span> (Serial.<span class="hljs-built_in">available</span>() &gt; <span class="hljs-number">0</span>) {
+    String message = Serial.<span class="hljs-built_in">readStringUntil</span>(<span class="hljs-string">&#x27;\n&#x27;</span>);
+
+    <span class="hljs-comment">// Echo back with confirmation</span>
+    Serial.<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Arduino received: &quot;</span>);
+    Serial.<span class="hljs-built_in">println</span>(message);
+  }
+}
+</code></pre>
+<h3 id="python-code-with-reading">Python Code (with reading):</h3>
+<pre><code class="language-python"><span class="hljs-comment">#!/usr/bin/env python3</span>
+<span class="hljs-keyword">import</span> serial
+<span class="hljs-keyword">import</span> time
+
+ser = serial.Serial(<span class="hljs-string">&#x27;/dev/ttyACM0&#x27;</span>, <span class="hljs-number">9600</span>, timeout=<span class="hljs-number">1</span>)
+time.sleep(<span class="hljs-number">2</span>)
+
+<span class="hljs-comment"># Send message</span>
+message = <span class="hljs-string">&quot;Hello Arduino!&quot;</span>
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Sending: <span class="hljs-subst">{message}</span>&quot;</span>)
+ser.write(message.encode() + <span class="hljs-string">b&#x27;\n&#x27;</span>)
+
+<span class="hljs-comment"># Wait and read response</span>
+time.sleep(<span class="hljs-number">1</span>)
+<span class="hljs-keyword">if</span> ser.in_waiting &gt; <span class="hljs-number">0</span>:
+    response = ser.readline().decode().strip()
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Arduino replied: <span class="hljs-subst">{response}</span>&quot;</span>)
+
+ser.close()
+</code></pre>
+<hr>
+<h2 id="quick-troubleshooting">Quick Troubleshooting</h2>
+<h3 id="permission-denied-error">&quot;Permission denied&quot; error</h3>
+<pre><code class="language-bash"><span class="hljs-comment"># Quick fix (temporary)</span>
+sudo <span class="hljs-built_in">chmod</span> 666 /dev/ttyACM0
+
+<span class="hljs-comment"># Permanent fix</span>
+sudo usermod -a -G dialout <span class="hljs-variable">$USER</span>
+<span class="hljs-comment"># Then log out and back in</span>
+</code></pre>
+<h3 id="port-not-found">Port not found</h3>
+<pre><code class="language-bash"><span class="hljs-comment"># Check if Arduino is connected</span>
+lsusb | grep Arduino
+
+<span class="hljs-comment"># List all serial ports</span>
+<span class="hljs-built_in">ls</span> /dev/tty*
+</code></pre>
+<h3 id="port-already-in-use">&quot;Port already in use&quot;</h3>
+<ul>
+<li><strong>Close Arduino Serial Monitor</strong> before running Python</li>
+<li><strong>Close any Python scripts</strong> before opening Serial Monitor</li>
+<li>Only ONE program can use the serial port at a time!</li>
+</ul>
+<h3 id="arduino-not-responding">Arduino not responding</h3>
+<ol>
+<li>Press <strong>Reset button</strong> on Arduino</li>
+<li>Disconnect and reconnect USB cable</li>
+<li>Try a different USB port</li>
+<li>Check USB cable (some are power-only)</li>
+</ol>
+<hr>
+<h2 id="essential-code-templates">Essential Code Templates</h2>
+<h3 id="standard-python-pattern">Standard Python Pattern</h3>
+<pre><code class="language-python"><span class="hljs-keyword">import</span> serial
+<span class="hljs-keyword">import</span> time
+
+SERIAL_PORT = <span class="hljs-string">&#x27;/dev/ttyACM0&#x27;</span>
+BAUD_RATE = <span class="hljs-number">9600</span>
+
+ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=<span class="hljs-number">1</span>)
+time.sleep(<span class="hljs-number">2</span>)  <span class="hljs-comment"># Arduino reset delay - CRITICAL!</span>
+
+ser.write(<span class="hljs-string">&quot;message&quot;</span>.encode())
+ser.write(<span class="hljs-string">b&#x27;\n&#x27;</span>)  <span class="hljs-comment"># Message boundary</span>
+
+ser.close()
+</code></pre>
+<h3 id="standard-arduino-pattern">Standard Arduino Pattern</h3>
+<pre><code class="language-cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span> </span>{
+  Serial.<span class="hljs-built_in">begin</span>(<span class="hljs-number">9600</span>);
+  <span class="hljs-built_in">delay</span>(<span class="hljs-number">2000</span>);  <span class="hljs-comment">// Stabilization</span>
+}
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">if</span> (Serial.<span class="hljs-built_in">available</span>() &gt; <span class="hljs-number">0</span>) {
+    String msg = Serial.<span class="hljs-built_in">readStringUntil</span>(<span class="hljs-string">&#x27;\n&#x27;</span>);
+    <span class="hljs-comment">// Process message</span>
+  }
+}
+</code></pre>
+<hr>
+<h2 id="key-points-to-remember">Key Points to Remember</h2>
+<ol>
+<li><strong>Baud rate MUST match</strong> in both Python and Arduino (9600)</li>
+<li><strong>Always include delays:</strong>
+<ul>
+<li>Python: <code>time.sleep(2)</code> after opening connection</li>
+<li>Arduino: <code>delay(2000)</code> in setup()</li>
+</ul>
+</li>
+<li><strong>Use newline delimiters</strong> (<code>\n</code>) to mark message boundaries</li>
+<li><strong>Only one program</strong> can access the serial port at a time</li>
+<li><strong>Encode/decode text:</strong>
+<ul>
+<li>Python sending: <code>.encode()</code></li>
+<li>Python receiving: <code>.decode()</code></li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="next-steps">Next Steps</h2>
+<p>✅ <strong>You're ready to start programming!</strong></p>
+<ul>
+<li>Try the experiment scripts: <code>RPI-Arduino_serial/experiment_scripts.py</code></li>
+<li>Complete Lesson 0: <code>lesson_0_first_serial_message.md</code></li>
+<li>Explore the Student User Guide: <code>student_user_guide.md</code></li>
+</ul>
+<hr>
+<h2 id="complete-setup-checklist">Complete Setup Checklist</h2>
+<ul class="contains-task-list">
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Arduino IDE installed and launches</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> User added to dialout and tty groups</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Rebooted after adding groups</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> PySerial installed</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Arduino connects and shows in <code>lsusb</code></li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Arduino sketch uploads successfully</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Python script runs without errors</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Messages visible in Serial Monitor</li>
+</ul>
+<hr>
+<h2 id="quick-command-reference">Quick Command Reference</h2>
+<pre><code class="language-bash"><span class="hljs-comment"># Check Arduino connection</span>
+lsusb | grep Arduino
+<span class="hljs-built_in">ls</span> /dev/ttyACM*
+
+<span class="hljs-comment"># Launch Arduino IDE</span>
+arduino &amp;
+
+<span class="hljs-comment"># Test PySerial</span>
+python3 -c <span class="hljs-string">&quot;import serial; print(&#x27;OK&#x27;)&quot;</span>
+
+<span class="hljs-comment"># Fix permissions (temporary)</span>
+sudo <span class="hljs-built_in">chmod</span> 666 /dev/ttyACM0
+
+<span class="hljs-comment"># Check your groups</span>
+<span class="hljs-built_in">groups</span>
+</code></pre>
+<hr>
+<p><strong>Version:</strong> 1.0
+<strong>Last Updated:</strong> October 2025
+<strong>Estimated Time:</strong> 15 minutes
+<strong>Difficulty:</strong> Beginner</p>
+<p><strong>Setup complete! Start creating! 🚀</strong></p>
+
+            <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+            
+        </body>
+        </html>
